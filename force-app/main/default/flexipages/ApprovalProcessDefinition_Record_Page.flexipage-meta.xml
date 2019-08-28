@@ -7,12 +7,40 @@
                 <value>false</value>
             </componentInstanceProperties>
             <componentInstanceProperties>
+                <name>hideChatterActions</name>
+                <value>false</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
                 <name>numVisibleActions</name>
                 <value>3</value>
             </componentInstanceProperties>
             <componentName>force:highlightsPanel</componentName>
         </componentInstances>
         <componentInstances>
+            <componentInstanceProperties>
+                <name>addTabName</name>
+                <value>Add</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>availableObjectTypes</name>
+                <value>User, Role, Group</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>editTabName</name>
+                <value>Edit</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>managerName</name>
+                <value>ManageApprovalInitialSubmitters</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>supportedAddCapabilities</name>
+                <value>Add</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>supportedEditCapabilities</name>
+                <value>Remove</value>
+            </componentInstanceProperties>
             <componentName>roleManager</componentName>
         </componentInstances>
         <mode>Replace</mode>

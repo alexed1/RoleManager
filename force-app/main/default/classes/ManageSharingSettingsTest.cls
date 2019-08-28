@@ -18,7 +18,7 @@ private class ManageSharingSettingsTest {
 
     @IsTest
     static void testHandleButtonAction() {
-        Account acc = new Account(Name = TEST_NAME);
+        Sharing_Test_Object__c acc = new Sharing_Test_Object__c(Name = TEST_NAME);
         insert acc;
         UserRole testRole = [SELECT Id FROM UserRole WHERE Name =: TEST_NAME];
         Group testGroup = [SELECT Id, Name FROM Group WHERE RelatedId = :testRole.Id AND Type = 'Role'];
