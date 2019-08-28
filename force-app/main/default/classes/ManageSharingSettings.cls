@@ -231,15 +231,6 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
     }
 
 
-    private static boolean isButtonSupported(String buttonName) {
-        for (RoleManagerController.ButtonSetting bs : supportedButtonSettings) {
-            if (bs.name == buttonName) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @TestVisible
     private static String getSharingTableName(String sobj) {
         if (sobj.contains('__c')) {
