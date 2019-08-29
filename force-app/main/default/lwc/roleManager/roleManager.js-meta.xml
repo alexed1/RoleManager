@@ -10,10 +10,6 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
-            <objects>
-                <object>Account</object>
-                <object>ApprovalProcessDefinition__c</object>
-            </objects>
             <property name="editTabName" type="String"></property>
             <property name="addTabName" type="String"></property>
             <property name="supportedAddCapabilities" type="String"></property>
