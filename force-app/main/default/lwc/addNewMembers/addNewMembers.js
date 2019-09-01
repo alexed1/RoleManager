@@ -43,6 +43,7 @@ export default class addNewMembers extends LightningElement {
     //Existing members for current record
     @api existingMembers;
     @api supportedButtons;
+    @api memberParams;
     @track label = {
         Search,
         TooManyResultsMessage,
@@ -150,7 +151,8 @@ export default class addNewMembers extends LightningElement {
         let actionParams = JSON.stringify({
             'userOrGroupID': event.detail.row.value,
             'recordId': this.recordId,
-            'type': this.selectedType
+            'type': this.selectedType,
+            'memberParams': this.memberParams
         });
         try {
             await handleButtonAction(

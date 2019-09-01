@@ -54,7 +54,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>OWDReadWrite</shortDescription>
-        <value>Sharing Settings must be private or public read/write to enable manual sharing</value>
+        <value>Sharing Settings must be private or public read only to enable manual sharing</value>
     </labels>
 
     <labels>
