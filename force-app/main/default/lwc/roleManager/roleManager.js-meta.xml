@@ -5,18 +5,26 @@
     <masterLabel>RoleManager</masterLabel>
     <description>Role Manager</description>
     <targets>
-        <!-- <target>lightning__FlowScreen</target>  -->
+        <target>lightning__FlowScreen</target>  
         <target>lightning__RecordPage</target>
     </targets>
     <targetConfigs>
-        <targetConfig targets="lightning__RecordPage">
-            <property name="editTabName" type="String"></property>
-            <property name="addTabName" type="String"></property>
-            <property name="supportedAddCapabilities" type="String"></property>
-            <property name="supportedEditCapabilities" type="String"></property>
-            <property name="managerName" type="String"></property>
-            <property name="availableObjectTypes" type="String"></property>
-        </targetConfig>
+            <targetConfig targets="lightning__RecordPage">
+                    <property name="editTabName" type="String"></property>
+                    <property name="addTabName"  type="String"></property>
+                    <property name="supportedAddCapabilities" type="String"></property>
+                    <property name="supportedEditCapabilities"  type="String"></property>
+                    <property name="managerName" type="String"></property>
+                    <property name="availableObjectTypes" type="String"></property>
+            </targetConfig>
+            <targetConfig targets="lightning__FlowScreen">
+                    <property name="editTabName" required="true" type="String"></property>
+                    <property name="addTabName"   required="true" type="String"></property>
+                    <property name="supportedAddCapabilities"  required="true" type="String"></property>
+                    <property name="supportedEditCapabilities"   required="true" type="String"></property>
+                    <property name="managerName"  required="true" type="String"></property>
+                    <property name="availableObjectTypes"  required="true" type="String"></property>
+            </targetConfig>
     </targetConfigs>
 
 </LightningComponentBundle>
