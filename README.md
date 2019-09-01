@@ -1,6 +1,6 @@
 # Role Manager
 
-Generic Lightning Web Component that allows admin/developer to add an ability to insert/modify relations with other records.
+Lightning Web Component that provides a general manager UI great for Lookup and Assign scenarios common to Setup application.
 
 ## Possible use cases 
 1. Record Sharing
