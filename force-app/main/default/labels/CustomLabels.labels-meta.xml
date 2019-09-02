@@ -14,7 +14,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>ButtonIsNotSupportedMessage</shortDescription>
-        <value>Following buttons are note supported: </value>
+        <value>Following buttons are not supported: </value>
     </labels>
     <labels>
         <fullName>SupportedButtonsEmptyMessage</fullName>
