@@ -1,5 +1,5 @@
 <template>
-    <template if:true={loadFinished}>
+    <template if:true={showMarkup}>
         <template if:true={errorMessage}>
             <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme--error" role="alert">
                 <h2> {errorMessage} </h2>
@@ -9,9 +9,9 @@
             <lightning-card title={cardTitle}>
 
                 <div class="slds-m-horizontal_medium">
-                    <lightning-tabset variant="scoped">
-
-                        <lightning-tab label={editTabName}>
+                    <lightning-tabset variant="scoped" active-tab-value= {defaultTab}>
+                        <template if:true={showExistingTab}>
+                        <lightning-tab label={editTabName} value={editTabName}>
                             <c-view-edit-members
                                     record-id={recordId}
                                     supported-edit-capabilities={supportedEditCapabilities}
@@ -21,9 +21,10 @@
                                     onsearchrefresh={refresh}
                             ></c-view-edit-members>
                         </lightning-tab>
-
-                        <lightning-tab label={addTabName}>
+                        </template>
+                        <lightning-tab label={addTabName} value={addTabName}>
                             <c-add-new-members
+                                    member-params={memberParams}
                                     record-id={recordId}
                                     available-object-types={availableObjectTypes}
                                     supported-add-capabilities={supportedAddCapabilities}

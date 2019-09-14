@@ -54,7 +54,7 @@ global with sharing class RoleManagerController {
     }
 
     global enum MatchingAction {
-        EXISTS, NOTEXISTS, VALUEEQUALS, SUPPORTED
+        ANYEXISTS, EXISTS, NOTEXISTS, VALUEEQUALS, SUPPORTED
     }
 
     global class ButtonMatchingRule {

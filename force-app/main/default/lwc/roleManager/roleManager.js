@@ -25,6 +25,8 @@ export default class RoleManager extends LightningElement {
     @api managerName;
     @api supportedAddCapabilities;
     @api supportedEditCapabilities;
+    @api layout = 'Tabbed';
+    @api memberParams;
     @track existingMembers;
     @track supportedButtons;
     @api ruleName;
@@ -32,16 +34,22 @@ export default class RoleManager extends LightningElement {
     @api log = false;
     source = 'RoleManager';
     @track loadFinished = false;
+    @api doRender;
     @track cardTitle = '';
+    @track errors = [];
 
     @wire(getSupportedButtons, {managerName: '$managerName'})
     _getSupportedButtons(result) {
         this._refreshable = result;
         if (result.error) {
+            this.errors.push(result.error.body.message);
             logError(this.log, this.source, 'getSupportedButtons', result.error);
         } else if (result.data) {
             this.supportedButtons = JSON.parse(result.data);
             this.loadFinished = true;
+            if (this.doRender !== false) {
+                this.doRender = true;
+            }
         }
     }
 
@@ -49,10 +57,31 @@ export default class RoleManager extends LightningElement {
     _getExistingMembers(result) {
         this._refreshable = result;
         if (result.error) {
+            this.errors.push(result.error.body.message);
             logError(this.log, this.source, 'getExistingMembers', result.error);
         } else if (result.data) {
             this.existingMembers = result.data;
+            const memberRefreshedEvent = new CustomEvent('membersrefreshed', {
+                bubbles: true, detail: {
+                    members: result.data
+                }
+            });
+
+            this.dispatchEvent(memberRefreshedEvent);
         }
+    }
+
+    get defaultTab() {
+        if (!this.existingMembers || this.existingMembers.length == 0) {
+            return this.addTabName;
+        } else {
+            return this.editTabName;
+        }
+
+    }
+
+    get showMarkup() {
+        return this.loadFinished && this.doRender;
     }
 
     @api refresh() {
@@ -64,8 +93,12 @@ export default class RoleManager extends LightningElement {
         });
     }
 
+    get showExistingTab() {
+        return this.layout === 'Tabbed';
+    }
+
     get errorMessage() {
-        let resultErrors = [];
+        let resultErrors = [...this.errors];
 
         if (!this.supportedButtons) {
             resultErrors.push(SupportedButtonsEmptyMessage);
@@ -73,7 +106,7 @@ export default class RoleManager extends LightningElement {
         if (!this.supportedAddCapabilities) {
             resultErrors.push(SupportedAddCapabilitiesEmptyMessage);
         }
-        if (!this.supportedEditCapabilities) {
+        if (!this.supportedEditCapabilities && this.showExistingTab) {
             resultErrors.push(SupportedEditCapabilitiesEmptyMessage);
         }
         if (!this.managerName) {
@@ -81,7 +114,8 @@ export default class RoleManager extends LightningElement {
         }
 
         if (this.supportedButtons && (this.supportedAddCapabilities || this.supportedEditCapabilities)) {
-            let notSupportedButtnos = getNotSupportedButtons(this.supportedButtons, this.supportedAddCapabilities + ', ' + this.supportedEditCapabilities);
+            let allButtonsString = this.supportedAddCapabilities + (this.showExistingTab ? (', ' + this.supportedEditCapabilities) : '');
+            let notSupportedButtnos = getNotSupportedButtons(this.supportedButtons, allButtonsString);
 
             if (notSupportedButtnos.length > 0) {
                 resultErrors.push(ButtonIsNotSupportedMessage + notSupportedButtnos.join(', '));
