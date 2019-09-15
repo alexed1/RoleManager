@@ -5,7 +5,7 @@ import SupportedAddCapabilitiesEmptyMessage from '@salesforce/label/c.SupportedA
 import ButtonIsNotSupportedMessage from '@salesforce/label/c.ButtonIsNotSupportedMessage';
 import SupportedEditCapabilitiesEmptyMessage from '@salesforce/label/c.SupportedEditCapabilitiesEmptyMessage';
 import ManagerEmptyMessage from '@salesforce/label/c.ManagerEmptyMessage';
-
+import InvalidRecordIdMessage from '@salesforce/label/c.InvalidRecordIdMessage';
 import {refreshApex} from '@salesforce/apex';
 import getExistingMembers from '@salesforce/apex/RoleManagerController.getExistingMembers';
 import getSupportedButtons from '@salesforce/apex/RoleManagerController.getSupportedButtons';
@@ -34,22 +34,19 @@ export default class RoleManager extends LightningElement {
     @api log = false;
     source = 'RoleManager';
     @track loadFinished = false;
-    @api doRender;
     @track cardTitle = '';
     @track errors = [];
 
-    @wire(getSupportedButtons, {managerName: '$managerName'})
+    @wire(getSupportedButtons, {managerName: '$managerName', recordId: '$recordId'})
     _getSupportedButtons(result) {
         this._refreshable = result;
         if (result.error) {
             this.errors.push(result.error.body.message);
             logError(this.log, this.source, 'getSupportedButtons', result.error);
+            this.loadFinished = true;
         } else if (result.data) {
             this.supportedButtons = JSON.parse(result.data);
             this.loadFinished = true;
-            if (this.doRender !== false) {
-                this.doRender = true;
-            }
         }
     }
 
@@ -60,6 +57,10 @@ export default class RoleManager extends LightningElement {
             this.errors.push(result.error.body.message);
             logError(this.log, this.source, 'getExistingMembers', result.error);
         } else if (result.data) {
+            if (this.errors.length > 0){
+                return;
+            }
+
             this.existingMembers = result.data;
             const memberRefreshedEvent = new CustomEvent('membersrefreshed', {
                 bubbles: true, detail: {
@@ -81,7 +82,7 @@ export default class RoleManager extends LightningElement {
     }
 
     get showMarkup() {
-        return this.loadFinished && this.doRender;
+        return this.loadFinished;
     }
 
     @api refresh() {
@@ -111,6 +112,9 @@ export default class RoleManager extends LightningElement {
         }
         if (!this.managerName) {
             resultErrors.push(ManagerEmptyMessage);
+        }
+        if (!this.recordId) {
+            resultErrors.push(InvalidRecordIdMessage);
         }
 
         if (this.supportedButtons && (this.supportedAddCapabilities || this.supportedEditCapabilities)) {
