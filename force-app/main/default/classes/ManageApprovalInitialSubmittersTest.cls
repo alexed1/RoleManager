@@ -22,7 +22,7 @@ private class ManageApprovalInitialSubmittersTest {
         User testUser = [SELECT Id FROM User WHERE Username = :TEST_NAME];
 
         //Checking if supported buttons are added
-        List<RoleManagerController.ButtonSetting> supportedButtons = (List<RoleManagerController.ButtonSetting>) JSON.deserialize(RoleManagerController.getSupportedButtons(MANAGER_NAME), List<RoleManagerController.ButtonSetting>.class);
+        List<RoleManagerController.ButtonSetting> supportedButtons = (List<RoleManagerController.ButtonSetting>) JSON.deserialize(RoleManagerController.getSupportedButtons(MANAGER_NAME, apd.Id), List<RoleManagerController.ButtonSetting>.class);
         Set<String> actualButtonNames = new Set<String>();
         for (RoleManagerController.ButtonSetting bs : supportedButtons) {
             actualButtonNames.add(bs.name);
@@ -53,7 +53,7 @@ private class ManageApprovalInitialSubmittersTest {
     static void testMissingManager() {
         String wrongManagerName = MANAGER_NAME+'test';
         try{
-            List<RoleManagerController.ButtonSetting> supportedButtons = (List<RoleManagerController.ButtonSetting>) JSON.deserialize(RoleManagerController.getSupportedButtons(wrongManagerName), List<RoleManagerController.ButtonSetting>.class);
+            List<RoleManagerController.ButtonSetting> supportedButtons = (List<RoleManagerController.ButtonSetting>) JSON.deserialize(RoleManagerController.getSupportedButtons(wrongManagerName,''), List<RoleManagerController.ButtonSetting>.class);
         }catch (Exception ex){
             System.assertEquals(true, ex.getMessage().contains('Manager "' + wrongManagerName + '" is not found'));
         }
