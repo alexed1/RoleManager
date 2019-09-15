@@ -51,7 +51,7 @@ Developer can add another types by extending SearchUtils class.
     
     1. String execute(String buttonName, String paramsString) - method to execute button action
     2. List<RoleManagerController.MemberInfo> getExisting(String recordId) - method to get existing members for specified in parameters record Id
-    3. List<RoleManagerController.ButtonSetting> getSupportedButtons() - method to get supported buttons. Developer has to include all buttons that should be supported return statement of this method.
+    3. List<RoleManagerController.ButtonSetting> getSupportedButtons(String recordId) - method to get supported buttons. Developer has to include all buttons that should be supported return statement of this method.
     
 ## Button Options
     Developer is able to control action availability by setting up ButtonSettings. Each ButtonSetting has ButtonMatchingRule which determines whether button is disabled or not and disabledValues.

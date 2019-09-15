@@ -67,7 +67,7 @@ global with sharing class ManageApprovalStepApprovers implements RoleManagerProv
         return resultMap;
     }
 
-    public ManageApprovalStepApprovers() {
+    private static void generateButtonSettings() {
         supportedButtonSettings = new List<RoleManagerController.ButtonSetting>();
         supportedButtonSettings.add(new RoleManagerController.ButtonSetting('Add', new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.EXISTS)));
         supportedButtonSettings.add(new RoleManagerController.ButtonSetting('Remove', new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.NOTEXISTS)));
@@ -82,7 +82,10 @@ global with sharing class ManageApprovalStepApprovers implements RoleManagerProv
 //        ));
     }
 
-    public static List<RoleManagerController.ButtonSetting> getSupportedButtons() {
+    public static List<RoleManagerController.ButtonSetting> getSupportedButtons(String recordId) {
+        if (supportedButtonSettings == null) {
+            generateButtonSettings();
+        }
         return supportedButtonSettings;
     }
 }

@@ -9,6 +9,22 @@
         <value>Your search found more than 200 results.  Keep typing to make it more specific</value>
     </labels>
     <labels>
+        <fullName>InvalidRecordIdMessage</fullName>
+        <categories>messages</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>InvalidRecordIdMessage</shortDescription>
+        <value>The RoleManager component requires a valid recordId to apply changes</value>
+    </labels>
+    <labels>
+        <fullName>RoleDoesNotHaveGroup</fullName>
+        <categories>messages</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>RoleDoesNotHaveGroup</shortDescription>
+        <value>Selected role does not have corresponding group.</value>
+    </labels>
+    <labels>
         <fullName>ButtonIsNotSupportedMessage</fullName>
         <categories>messages</categories>
         <language>en_US</language>

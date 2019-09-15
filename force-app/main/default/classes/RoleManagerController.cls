@@ -13,9 +13,9 @@ global with sharing class RoleManagerController {
     }
 
     @AuraEnabled(cacheable=true)
-    global static String getSupportedButtons(String managerName) {
+    global static String getSupportedButtons(String managerName, String recordId) {
 
-        return JSON.serialize(getRoleManagerProvider(managerName).getSupportedButtons());
+        return JSON.serialize(getRoleManagerProvider(managerName).getSupportedButtons(recordId));
     }
 
     private static RoleManagerProvider getRoleManagerProvider(String managerName) {

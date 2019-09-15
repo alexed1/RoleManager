@@ -40,6 +40,8 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
             list<group> matchingGroups = [select id, name, type from group where RelatedId = :UserOrGroupID and type = 'Role'];
             if (matchingGroups.size() > 1) {
                 throw new AuraHandledException(Label.MultipleGroupsForRole);
+            }else if(matchingGroups.size()==0){
+                throw new AuraHandledException(Label.RoleDoesNotHaveGroup);
             }
             UserOrGroupID = matchingGroups[0].Id;
         }
@@ -143,7 +145,6 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
         if (!sharingExists(AdminTools.objectTypeFromId(recordId))) {
             throw new AuraHandledException(Label.OWDReadWrite);
         }
-
         List<RoleManagerController.MemberInfo> results = new List<RoleManagerController.MemberInfo>();
         list<sObject> shares = database.query(buildQuery(recordId));
         Map<Id, String> idToObjectType = new Map<Id, String>();
@@ -187,7 +188,16 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
         return recordIdToRecord;
     }
 
-    public ManageSharingSettings() {
+    private static void generateButtonSettings(String recordId) {
+        String accessLevelFieldName;
+        try {
+            accessLevelFieldName = AdminTools.getAccessLevelField(AdminTools.objectTypeFromId(recordId));
+        } catch (Exception ex) {
+            AuraHandledException e = new AuraHandledException(Label.InvalidRecordIdMessage);
+            e.setMessage(Label.InvalidRecordIdMessage);
+            throw e;
+        }
+
         supportedButtonSettings = new List<RoleManagerController.ButtonSetting>();
 
         supportedButtonSettings.add(new RoleManagerController.ButtonSetting('None', new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.NOTEXISTS)));
@@ -204,7 +214,7 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
         supportedButtonSettings.add(new RoleManagerController.ButtonSetting(
                 'Read/Write',
                 new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.VALUEEQUALS, new Map<String, List<String>>{
-                        'AccountAccessLevel' => (new List<String>{
+                        accessLevelFieldName => (new List<String>{
                                 'Edit', 'All'
                         }),
                         'RowCause' => (new List<String>{
@@ -219,14 +229,17 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
                         'RowCause' => (new List<String>{
                                 'Owner'
                         }),
-                        'AccountAccessLevel' => (new List<String>{
+                        accessLevelFieldName => (new List<String>{
                                 'Read'
                         })
                 }
                 )));
     }
 
-    public static List<RoleManagerController.ButtonSetting> getSupportedButtons() {
+    public static List<RoleManagerController.ButtonSetting> getSupportedButtons(String recordId) {
+        if (supportedButtonSettings == null) {
+            generateButtonSettings(recordId);
+        }
         return supportedButtonSettings;
     }
 
