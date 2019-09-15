@@ -43,9 +43,10 @@ export default class RoleManager extends LightningElement {
         if (result.error) {
             this.errors.push(result.error.body.message);
             logError(this.log, this.source, 'getSupportedButtons', result.error);
-            this.loadFinished = true;
         } else if (result.data) {
             this.supportedButtons = JSON.parse(result.data);
+        }
+        if (result.data || result.error) {
             this.loadFinished = true;
         }
     }
@@ -57,7 +58,7 @@ export default class RoleManager extends LightningElement {
             this.errors.push(result.error.body.message);
             logError(this.log, this.source, 'getExistingMembers', result.error);
         } else if (result.data) {
-            if (this.errors.length > 0){
+            if (this.errors.length > 0) {
                 return;
             }
 
@@ -82,7 +83,11 @@ export default class RoleManager extends LightningElement {
     }
 
     get showMarkup() {
-        return this.loadFinished;
+        return this.loadFinished && (typeof this.supportedButtons != 'undefined') && !this.errorMessage;
+    }
+
+    get showError() {
+        return (!this.loadFinished && !this.recordId) || (this.loadFinished && this.errorMessage);
     }
 
     @api refresh() {
