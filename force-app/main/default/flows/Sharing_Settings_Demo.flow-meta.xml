@@ -30,6 +30,25 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>screenRecord</name>
+        <label>screenRecord</label>
+        <locationX>112</locationX>
+        <locationY>196</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Set_Sharing_Settings</targetReference>
+        </connector>
+        <fields>
+            <name>dispRecordId</name>
+            <fieldText>&lt;p&gt;recordId is: {!recordId}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Set_Sharing_Settings</name>
         <label>Set Sharing Settings</label>
         <locationX>199</locationX>
@@ -85,6 +104,13 @@
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
-    <startElementReference>Set_Sharing_Settings</startElementReference>
-    <status>Draft</status>
+    <startElementReference>screenRecord</startElementReference>
+    <status>Active</status>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
 </Flow>
