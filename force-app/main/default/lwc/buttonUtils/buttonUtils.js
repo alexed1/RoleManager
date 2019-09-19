@@ -24,9 +24,10 @@ const getColumnDescriptor = (curButtonLabel) => {
             label: curButtonLabel,
             name: curButtonLabel, //this is used to determine an apex method to call
             variant: 'neutral',
-            disabled: {fieldName: curButtonLabel.replace(/ /g, '') + 'buttonDisabled'}
+            iconName: {fieldName: curButtonLabel.replace(/ /g, '') + 'buttonIconName'}
+            // disabled: {fieldName: curButtonLabel.replace(/ /g, '') + 'buttonDisabled'}
         },
-        initialWidth: 120 //TODO: Calculate based on content
+        initialWidth: curButtonLabel.length * 7 + 80
     }
 };
 
@@ -79,7 +80,7 @@ const buttonStyling = (supportedButtonSettings, selectedButtonNames, id, existin
             }
         }
 
-
+        resultButtonSettings[buttonName.replace(/ /g, '') + 'buttonIconName'] = isDisabled ? 'utility:check' : ' ';
         resultButtonSettings[buttonName.replace(/ /g, '') + 'buttonDisabled'] = isDisabled;
     });
     return resultButtonSettings;

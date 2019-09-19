@@ -73,6 +73,10 @@ export default class RoleManager extends LightningElement {
         }
     }
 
+    showToast(event) {
+        this.template.querySelector('c-toast-message').showCustomNotice(event);
+    }
+
     get defaultTab() {
         if (!this.existingMembers || this.existingMembers.length == 0) {
             return this.addTabName;

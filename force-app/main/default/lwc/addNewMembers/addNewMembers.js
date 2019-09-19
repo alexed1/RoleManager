@@ -3,7 +3,7 @@ import {LightningElement, api, track, wire} from 'lwc';
 import Search from '@salesforce/label/c.Search';
 import For from '@salesforce/label/c.For';
 import TooManyResultsMessage from '@salesforce/label/c.TooManyResultsMessage';
-
+import NoSearchResultsMessage from '@salesforce/label/c.NoSearchResultsMessage';
 import Queues from '@salesforce/label/c.Queues';
 import RelatedUsers from '@salesforce/label/c.RelatedUsers';
 import PublicGroups from '@salesforce/label/c.PublicGroups';
@@ -47,6 +47,7 @@ export default class addNewMembers extends LightningElement {
     @track label = {
         Search,
         TooManyResultsMessage,
+        NoSearchResultsMessage,
         For
     };
     @track searchString = '';
@@ -54,6 +55,7 @@ export default class addNewMembers extends LightningElement {
     @track searchResults = [];
     @track searchDisabled = false;
     viewEditMembers = [];
+    @track isSearchApplied = false;
     source = 'addNewMembers';
 
     connectedCallback() {
@@ -61,7 +63,6 @@ export default class addNewMembers extends LightningElement {
             this.selectedType = splitValues(this.availableObjectTypes)[0];
         }
     }
-
 
 
     get objectTypes() {
@@ -112,6 +113,7 @@ export default class addNewMembers extends LightningElement {
 
         this.searchResults = results[this.selectedType];
         this.updateRowButtons();
+        this.isSearchApplied = true;
         this.searchDisabled = false;
     }
 
@@ -125,6 +127,7 @@ export default class addNewMembers extends LightningElement {
             return;
         }
 
+        this.isSearchApplied = true;
         this.searchString = searchString;
     }
 
@@ -145,6 +148,14 @@ export default class addNewMembers extends LightningElement {
         });
 
         this.searchResults = newArray;
+    }
+
+    get isTableVisible() {
+        return (this.searchResults && this.searchResults.length > 0);
+    }
+
+    get isNoSearchResultsMessageVisible() {
+        return (this.searchResults && this.searchResults.length == 0 && this.searchString && this.isSearchApplied)
     }
 
     async handleRowAction(event) {
@@ -169,11 +180,21 @@ export default class addNewMembers extends LightningElement {
 
     toastTheError(e, errorSource) {
         logError(this.log, this.source, errorSource, e);
-        this.dispatchEvent(
-            new ShowToastEvent({
+        const dataErrorEvent = new CustomEvent('dataerror', {
+            bubbles: true, detail: {
+                title: 'Error',
                 message: e.body.message,
-                variant: 'error'
-            })
-        );
+                variant: 'error',
+                autoClose: true
+            }
+        });
+
+        this.dispatchEvent(dataErrorEvent);
+        // this.dispatchEvent(
+        //     new ShowToastEvent({
+        //         message: e.body.message,
+        //         variant: 'error'
+        //     })
+        // );
     }
 }

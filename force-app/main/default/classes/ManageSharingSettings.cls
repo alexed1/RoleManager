@@ -14,7 +14,7 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
                     params.get('userOrGroupID'),
                     params.get('recordId'),
                     BUTTON_TO_ACCESS_TYPE.get(buttonName));
-        } else if (buttonName == 'None') {
+        } else if (buttonName == 'Remove') {
             return remove(
                     params.get('userOrGroupID'),
                     params.get('recordId'));
@@ -40,7 +40,7 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
             list<group> matchingGroups = [select id, name, type from group where RelatedId = :UserOrGroupID and type = 'Role'];
             if (matchingGroups.size() > 1) {
                 throw new AuraHandledException(Label.MultipleGroupsForRole);
-            }else if(matchingGroups.size()==0){
+            } else if (matchingGroups.size() == 0) {
                 throw new AuraHandledException(Label.RoleDoesNotHaveGroup);
             }
             UserOrGroupID = matchingGroups[0].Id;
@@ -67,7 +67,7 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
             try {
                 update existing;
             } catch (exception e) {
-                throw new AuraHandledException(e.getMessage());
+                throw new AuraHandledException(generateErrorMessage(e));
             }
 
             return JSON.serialize(existing);
@@ -97,7 +97,7 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
             try {
                 insert share;
             } catch (exception e) {
-                throw new AuraHandledException(e.getMessage());
+                throw new AuraHandledException(generateErrorMessage(e));
             }
             return JSON.serialize(share);
         }
@@ -133,7 +133,7 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
             delete existing;
             return 'SUCCESS';//TODO: fix
         } catch (Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
+            throw new AuraHandledException(generateErrorMessage(ex));
         }
     }
 
@@ -200,16 +200,16 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
 
         supportedButtonSettings = new List<RoleManagerController.ButtonSetting>();
 
-        supportedButtonSettings.add(new RoleManagerController.ButtonSetting('None', new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.NOTEXISTS)));
+        supportedButtonSettings.add(new RoleManagerController.ButtonSetting('Remove', new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.NOTEXISTS)));
 
-        supportedButtonSettings.add(new RoleManagerController.ButtonSetting(
-                'None',
-                new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.VALUEEQUALS, new Map<String, List<String>>{
-                        'RowCause' => (new List<String>{
-                                'Owner', 'ImplicitChild', 'ImplicitParent'
-                        })
-                })
-        ));
+//        supportedButtonSettings.add(new RoleManagerController.ButtonSetting(
+//                'None',
+//                new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.VALUEEQUALS, new Map<String, List<String>>{
+//                        'RowCause' => (new List<String>{
+//                                'Owner', 'ImplicitChild', 'ImplicitParent'
+//                        })
+//                })
+//        ));
 
         supportedButtonSettings.add(new RoleManagerController.ButtonSetting(
                 'Read/Write',
@@ -226,9 +226,9 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
         supportedButtonSettings.add(new RoleManagerController.ButtonSetting(
                 'Read',
                 new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.VALUEEQUALS, new Map<String, List<String>>{
-                        'RowCause' => (new List<String>{
-                                'Owner'
-                        }),
+//                        'RowCause' => (new List<String>{
+//                                'Owner'
+//                        }),
                         accessLevelFieldName => (new List<String>{
                                 'Read'
                         })
@@ -330,5 +330,14 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
         return false;
     }
 
+    private static String generateErrorMessage(Exception ex) {
+        if (ex.getMessage().contains('DELETE_FAILED') || ex.getMessage().contains('INVALID_ACCESS_LEVEL')) {
+            return Label.CantReduceSharingLevelMessage;
+        } else if (ex.getMessage().contains('FIELD_INTEGRITY_EXCEPTION')) {
+            return Label.CannotBeSharedMessage;
+        } else {
+            return ex.getMessage();
+        }
+    }
 
 }

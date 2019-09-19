@@ -62,4 +62,17 @@ export default class ViewEditMembers extends LightningElement {
             this.toastTheError(e, 'handleButtonAction');
         }
     }
+    toastTheError(e, errorSource) {
+        logError(this.log, this.source, errorSource, e);
+        const dataErrorEvent = new CustomEvent('dataerror', {
+            bubbles: true, detail: {
+                title: 'Error',
+                message: e.body.message,
+                variant: 'error',
+                autoClose: true
+            }
+        });
+
+        this.dispatchEvent(dataErrorEvent);
+    }
 }
