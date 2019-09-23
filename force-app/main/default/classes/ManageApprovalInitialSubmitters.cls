@@ -19,7 +19,15 @@ global with sharing class ManageApprovalInitialSubmitters implements RoleManager
         throw new AuraHandledException('Button "' + buttonName + '" is not supported');
     }
 
-    private static String add(Id userOrGroupID, Id recordId, String type) {
+    private static String add(String userOrGroupID, Id recordId, String type) {
+        List<AP_Allowed_Submitter__c> existingSubmitters = [
+                SELECT Id,Name, ApprovalProcessDefinition__c,Type__c
+                FROM AP_Allowed_Submitter__c
+                WHERE Name = :userOrGroupID AND ApprovalProcessDefinition__c = :recordId AND Type__c = :type
+        ];
+        if (!existingSubmitters.isEmpty()) {
+            return JSON.serialize(existingSubmitters[0]);
+        }
         AP_Allowed_Submitter__c newSubmitter = new AP_Allowed_Submitter__c(
                 Name = userOrGroupID,
                 ApprovalProcessDefinition__c = recordId,
@@ -32,7 +40,7 @@ global with sharing class ManageApprovalInitialSubmitters implements RoleManager
         }
     }
 
-    private static String remove(Id userOrGroupID, Id recordId) {
+    private static String remove(String userOrGroupID, Id recordId) {
         try {
             delete [SELECT Id FROM AP_Allowed_Submitter__c WHERE Name = :userOrGroupID AND ApprovalProcessDefinition__c = :recordId];
             return 'SUCCESS';
@@ -67,7 +75,7 @@ global with sharing class ManageApprovalInitialSubmitters implements RoleManager
         return resultMap;
     }
 
-    private static void generateButtonSettings()  {
+    private static void generateButtonSettings() {
         supportedButtonSettings = new List<RoleManagerController.ButtonSetting>();
         supportedButtonSettings.add(new RoleManagerController.ButtonSetting('Add', new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.EXISTS)));
         supportedButtonSettings.add(new RoleManagerController.ButtonSetting('Remove', new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.NOTEXISTS)));
