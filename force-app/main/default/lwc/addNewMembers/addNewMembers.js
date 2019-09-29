@@ -82,6 +82,7 @@ export default class addNewMembers extends LightningElement {
         logger(this.log, this.source, `type is now ${this.selectedType}`);
         // clear the results
         this.searchResults = [];
+        this.isSearchApplied = false;
     }
 
     searchRelatedUsers(searchString) {
@@ -111,7 +112,13 @@ export default class addNewMembers extends LightningElement {
         if (this.selectedType === 'RelatedUsers') {
             results[this.selectedType] = this.searchRelatedUsers(this.searchString);
         } else if (this.selectedType === 'Owner') {
-            results[this.selectedType] = [this.searchRelatedUsers().find(curUser => curUser.value === 'OwnerId')];
+            let ownerId = this.searchRelatedUsers().find(curUser => curUser.value === 'OwnerId');
+            if(ownerId){
+                results[this.selectedType] = [ownerId];
+            }else{
+                results[this.selectedType] = [];
+            }
+
         } else if (this.selectedType === 'Creator') {
             results[this.selectedType] = [{
                 label: this.memberData.fields.CreatedBy.displayValue,
@@ -126,8 +133,12 @@ export default class addNewMembers extends LightningElement {
         }
 
         logger(this.log, this.source, 'search results', results);
-
+        if (!results[this.selectedType]) {
+            this.searchResults = [];
+        } else {
         this.searchResults = results[this.selectedType];
+        }
+
         this.updateRowButtons();
         this.isSearchApplied = true;
         this.searchDisabled = false;
@@ -139,7 +150,7 @@ export default class addNewMembers extends LightningElement {
             .replace(/\*/g)
             .toLowerCase();
 
-        this.isSearchApplied = true;
+        this.isSearchApplied = false;
         this.searchString = searchString;
     }
 
@@ -167,7 +178,7 @@ export default class addNewMembers extends LightningElement {
     }
 
     get isNoSearchResultsMessageVisible() {
-        return (!this.searchDisabled && this.searchResults && this.searchResults.length == 0 && this.searchString && this.isSearchApplied)
+        return (!this.searchDisabled && this.searchResults && this.searchResults.length == 0 && this.isSearchApplied)
     }
 
     async handleRowAction(event) {
