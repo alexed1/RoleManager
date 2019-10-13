@@ -22,7 +22,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>RoleDoesNotHaveGroup</shortDescription>
-        <value>Selected role does not have corresponding group.</value>
+        <value>Selected role does not have corresponding group. Note that Roles do not currently work on Salesforce Scratch Orgs</value>
     </labels>
     <labels>
         <fullName>CantReduceSharingLevelMessage</fullName>

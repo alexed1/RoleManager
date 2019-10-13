@@ -1,20 +1,24 @@
 global with sharing class ManageSharingSettings implements RoleManagerProvider {
 
+    static String BUTTON_REMOVE = 'None';
+    static String BUTTON_READ = 'Read';
+    static String BUTTON_READ_WRITE = 'Read/Write';
+
     static List<RoleManagerController.ButtonSetting> supportedButtonSettings;
     static Map<String, String> BUTTON_TO_ACCESS_TYPE = new Map<String, String>{
-            'Read' => 'Read', 'Read/Write' => 'Edit'
+            BUTTON_READ => 'Read', BUTTON_READ_WRITE => 'Edit'
     };
 
     public static String execute(String buttonName, String paramsString) {
 
         Map<String, String> params = (Map<String, String>) JSON.deserialize(paramsString, Map<String, String>.class);
 
-        if (buttonName == 'Read' || buttonName == 'Read/Write') {
+        if (buttonName == BUTTON_READ || buttonName == BUTTON_READ_WRITE) {
             return add(
                     params.get('userOrGroupID'),
                     params.get('recordId'),
                     BUTTON_TO_ACCESS_TYPE.get(buttonName));
-        } else if (buttonName == 'Remove') {
+        } else if (buttonName == BUTTON_REMOVE) {
             return remove(
                     params.get('userOrGroupID'),
                     params.get('recordId'));
@@ -200,10 +204,10 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
 
         supportedButtonSettings = new List<RoleManagerController.ButtonSetting>();
 
-        supportedButtonSettings.add(new RoleManagerController.ButtonSetting('Remove', new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.NOTEXISTS)));
+        supportedButtonSettings.add(new RoleManagerController.ButtonSetting(BUTTON_REMOVE, new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.NOTEXISTS)));
 
 //        supportedButtonSettings.add(new RoleManagerController.ButtonSetting(
-//                'None',
+//                BUTTON_REMOVE,
 //                new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.VALUEEQUALS, new Map<String, List<String>>{
 //                        'RowCause' => (new List<String>{
 //                                'Owner', 'ImplicitChild', 'ImplicitParent'
@@ -212,7 +216,7 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
 //        ));
 
         supportedButtonSettings.add(new RoleManagerController.ButtonSetting(
-                'Read/Write',
+                BUTTON_READ_WRITE,
                 new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.VALUEEQUALS, new Map<String, List<String>>{
                         accessLevelFieldName => (new List<String>{
                                 'Edit', 'All'
@@ -224,7 +228,7 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
         ));
 
         supportedButtonSettings.add(new RoleManagerController.ButtonSetting(
-                'Read',
+                BUTTON_READ,
                 new RoleManagerController.ButtonMatchingRule(RoleManagerController.MatchingAction.VALUEEQUALS, new Map<String, List<String>>{
 //                        'RowCause' => (new List<String>{
 //                                'Owner'
