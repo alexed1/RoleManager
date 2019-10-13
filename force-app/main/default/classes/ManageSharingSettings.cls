@@ -214,7 +214,7 @@ global with sharing class ManageSharingSettings implements RoleManagerProvider {
                 }
             }
         }
-        
+
         return recordIdToRecord;
     }
 
